@@ -16,7 +16,6 @@ singularity_cache/
 
 # Input data (keep pipeline clean)
 input/
-data/
 *.fastq*
 *.fq*
 *.bam
