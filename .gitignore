@@ -1,0 +1,26 @@
+# Nextflow
+work/
+.nextflow*
+*.log
+
+# Outputs
+output/
+results/
+qc_reports/
+
+# Large / generated
+databases/
+singularity_cache/
+*.tar.gz
+*.db
+
+# Input data (keep pipeline clean)
+input/
+data/
+*.fastq*
+*.fq*
+*.bam
+*.vcf
+
+# System
+.DS_Store
