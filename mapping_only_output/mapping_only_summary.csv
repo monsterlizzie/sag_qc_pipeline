@@ -1,0 +1,4 @@
+"Sample_ID","Mapping_QC","Species","Ref_Cov_%","Het-SNP#"
+"GCA_000257785.1","PASS","Streptococcus_anginosus","70.08","9"
+"GCA_000257785.1","PASS","Streptococcus_constellatus","98.71","3"
+"GCA_000257785.1","FAIL","Streptococcus_intermedius","69.25","0"
