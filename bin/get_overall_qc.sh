@@ -1,6 +1,4 @@
-# Determine overall QC result based on File Validity, Read QC, Assembly QC, Mapping QC and Taxonomy QC
-# In case File Validity is not PASS, save its value (i.e. description of the issue) to Overall QC
-# In case of preprocess/assembly/mapping/taxonomy failure, there will be no relevant QC input, save corresponding MODULE FAILURE to Overall QC
+# Determine overall QC result based on File Validity, Read QC, Assembly QC, Taxonomy QC, and Mapping QC
 
 assign_overall_qc() {
     if [[ "$FILE_VALIDITY" == "null" ]]; then
@@ -8,7 +6,7 @@ assign_overall_qc() {
         return
     fi
     
-    if [[ ! "$FILE_VALIDITY" == "PASS" ]]; then
+    if [[ "$FILE_VALIDITY" != "PASS" ]]; then
         OVERALL_QC="$FILE_VALIDITY"
         return
     fi
@@ -23,26 +21,31 @@ assign_overall_qc() {
         return
     fi 
 
-    OVERALL_QC=""
-
     if [[ "$ASSEMBLY_QC" == "null" ]]; then
-        OVERALL_QC+="ASSEMBLY MODULE FAILURE;"
-    fi
-    
-    if [[ "$MAPPING_QC" == "null" ]]; then
-        OVERALL_QC+="MAPPING MODULE FAILURE;"
-    fi
-
-    if [[ "$TAXONOMY_QC" == "null" ]]; then
-        OVERALL_QC+="TAXONOMY MODULE FAILURE;"
-    fi
-
-    if [[ ! "$OVERALL_QC" == "" ]]; then
-        OVERALL_QC="${OVERALL_QC%;}"
+        OVERALL_QC="ASSEMBLY MODULE FAILURE"
         return
     fi
 
-    if [[ "$READ_QC" == "PASS" ]] && [[ "$ASSEMBLY_QC" == "PASS" ]] && [[ "$MAPPING_QC" == "PASS" ]] && [[ "$TAXONOMY_QC" == "PASS" ]]; then
+    if [[ "$TAXONOMY_QC" == "null" ]]; then
+        OVERALL_QC="TAXONOMY MODULE FAILURE"
+        return
+    fi
+
+    if [[ "$TAXONOMY_QC" == "FAIL" ]]; then
+        OVERALL_QC="FAIL"
+        return
+    fi
+
+    # Mapping is only expected if taxonomy passed
+    if [[ "$MAPPING_QC" == "null" ]]; then
+        OVERALL_QC="MAPPING MODULE FAILURE"
+        return
+    fi
+
+    if [[ "$READ_QC" == "PASS" ]] && \
+       [[ "$ASSEMBLY_QC" == "PASS" ]] && \
+       [[ "$TAXONOMY_QC" == "PASS" ]] && \
+       [[ "$MAPPING_QC" == "PASS" ]]; then
         OVERALL_QC="PASS"
     else
         OVERALL_QC="FAIL"
