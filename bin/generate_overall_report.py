@@ -42,6 +42,18 @@ def main():
 
     merged = merged[QC_COLUMNS]
     merged = merged.fillna("NA")
+        # If taxonomy failed, mapping was intentionally not run
+
+    mask_tax_fail = merged["Taxonomy_QC"] == "FAIL"
+
+    merged.loc[mask_tax_fail, "Mapping_QC"] = "SKIP"
+
+    merged.loc[mask_tax_fail, "Ref_Cov_%"] = "NA"
+
+    merged.loc[mask_tax_fail, "Het-SNP#"] = "NA"
+
+    merged.loc[mask_tax_fail, "Overall_QC"] = "FAIL"
+    
     merged = merged.sort_values("Sample_ID")
 
     merged.to_csv(out_csv, index=False)
